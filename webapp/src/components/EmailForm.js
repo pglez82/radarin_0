@@ -1,6 +1,7 @@
 import React from 'react';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import {addUser,getUsers} from '../api/api'
 
 class EmailForm extends React.Component{
   constructor(props) {
@@ -23,20 +24,16 @@ class EmailForm extends React.Component{
   }
 
   async registerUser(){
-    let response = await fetch('http://localhost:5000/api/users/add', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({'name':this.state.username, 'email':this.state.email})
-      })
-      let data = await response.json()
-      if (data.username !== this.state.name)
+      let response = await addUser(this.state.username,this.state.email)
+      console.log(response)
+      if (response.name !== this.state.username)
         this.setState({welcomeMsg:'ERROR: Something is wrong with the api!'})
       //Refresh the users
       this.fetchUsers()
   }
 
   async fetchUsers(){
-    let users = await (await fetch('http://localhost:5000/api/users/list')).json()
+    let users = await getUsers()
     this.props.refreshUsers(users)
   }
 

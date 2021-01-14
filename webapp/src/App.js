@@ -23,16 +23,14 @@ class App extends React.Component{
           <img src={logo} className="App-logo" alt="logo"/>
           <Welcome name="ASW students"/>
         </header>
-        <body>
-          <div className="App-content">
-            <EmailForm refreshUsers={this.refreshUsers.bind(this)}/>
-            <UserList users={this.state.users}/>
-            <a className="App-link"
-              href="https://github.com/pglez82/radarin_0"
-              target="_blank"
-              rel="noopener noreferrer">Source code</a>
-          </div>
-        </body>  
+        <div className="App-content">
+          <EmailForm refreshUsers={this.refreshUsers.bind(this)}/>
+          <UserList users={this.state.users}/>
+          <a className="App-link"
+            href="https://github.com/pglez82/radarin_0"
+            target="_blank"
+            rel="noopener noreferrer">Source code</a>
+        </div>
       </div>
     )
   }
