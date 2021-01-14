@@ -36,6 +36,10 @@
   justify-content: center; 
 }
 
+.UserList{
+  padding-top:5vh;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

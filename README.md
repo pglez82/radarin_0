@@ -39,7 +39,10 @@ sudo docker run -d -p 27017:27017 -v `pwd`/data:/data/db mongo
 The code is quite straight forward, the `server.js` launchs the api and connects to the mongo database using mongoose. The `app.js` is actually the api, you will see there two api entry points, one post for creating a new user, and one get to list all the users. The `models/users.js` defines the schema of our mongo database.
 
 ### Testing the rest api
-This will download an inmemory mongodb database, very suitable for testing.
+This will download an inmemory mongodb database, very suitable for testing. Also we need something for making the api requests, in this case we are using Supertest.
 ```
 npm install --save-dev jest mongodb-memory-server
+npm install supertest --save-dev
 ```
+The idea is to use Jest as the main testing framework. We are going to use it to launch our in-memory database and run the tests against the api. For making the get or post petitions we are going to use supertest.
+After configuring the tests in the `package.json` we can run them using `npm run test`
