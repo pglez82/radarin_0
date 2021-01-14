@@ -17,7 +17,7 @@ Lets make some modifications to the app, we will create an app that asks the nam
 npm install react-bootstrap bootstrap
 ```
 
-Add code explanation here
+Basically the app should be able to get the name and email of a user, send it to the api, and then refresh the list of the users from the api. You can check the relevant code in the components [EmailForm.js](webapp/src/components/EmailForm.js) and [UserList.js](webapp/src/components/UserList.js). 
 
 ### Testing the webapp
 
