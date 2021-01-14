@@ -1,0 +1,17 @@
+version: '3'
+services:
+  mongoserver:
+    image: mongo
+    volumes:
+      - ./restapi/data:/data/db
+    network_mode: "host"
+  restapi:
+    build: ./restapi
+    network_mode: "host"
+    depends_on:
+      - mongoserver
+  webapp:
+    build: ./webapp
+    network_mode: "host"
+    depends_on: 
+      - restapi
