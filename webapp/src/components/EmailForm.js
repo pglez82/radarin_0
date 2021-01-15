@@ -54,7 +54,7 @@ class EmailForm extends React.Component{
               <Form.Label>Email address</Form.Label>
               <Form.Control type="email" placeholder="Enter email" onChange={this.changeEmail.bind(this)} value={this.state.email}/>
               <Form.Text className="text-muted">
-                Do not worry about sharing your email with us. It will be safe!.
+                Careful! Your email will be public!
               </Form.Text>
             </Form.Group>
         
