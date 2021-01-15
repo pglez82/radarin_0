@@ -1,4 +1,6 @@
-const apiEndPoint='http://localhost:5000/api'
+//RESTAPI_URI is an enviroment variable defined in HEROKU. If it exists we know
+//we are in production. If not we are executing locally
+const apiEndPoint=process.env.RESTAPI_URI || 'http://localhost:5000/api'
 
 export async function addUser(username,email){
     console.log("adding a user "+username)

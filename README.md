@@ -110,3 +110,7 @@ sudo docker-compose down
 In this step we are going to setup GitHub Actions in order to have CI in our system. The idea is that, everytime we make a push to master, build the system (restapi and webapp), run the tests, and if everything is ok, build the docker images and upload them to Heroku to have our application deployed.
 
 The workflow for this is in [radarin.yml](.github/workflow/radarin.yml). In this file you can see that there are two jobs, one for the restapi, one for the webapp. Jobs are executed in pararell so this will speed up our build.
+
+So, the first to jobs in this file build the webapp and the restapi (in pararell). If everything goes well, it start deployment. For that we are going to use [Heroku](heroku.com). Heroku allows as to deploy docker containers. For the database we are going to use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) which will provide a free mongodb database in the cloud that will be enough for our application.
+One important thing here is that we need to change the connection string to the database depending if we are running our application (locally, launching it with npm start or with docker-compose, it doesn't matter). For that we are going to use one enviroment variable in Heroku. In our code (check server.js), if we find this variable we will connect to MongoDB Atlas, if not, we are connecting to our local MongoDB.
+In Heroku we need to create to apps, one for the restapi the other for the webapp. Each job is deploying one part of our project. 
