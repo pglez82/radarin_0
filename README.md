@@ -19,6 +19,20 @@ npm install react-bootstrap bootstrap
 
 Basically the app should be able to get the name and email of a user, send it to the api, and then refresh the list of the users from the api. You can check the relevant code in the components [EmailForm.js](webapp/src/components/EmailForm.js) and [UserList.js](webapp/src/components/UserList.js). The [App.js](webapp/src/App.js) component acts as the coordinator for the other components. Obviously there are other more sofisticated alternatives, for instance using [React Redux](https://react-redux.js.org/)
 
+### The documentation
+The idea here is to have the documentation along with the webapp in /docs. We are going to use asciidocs and plantuml. The template for the docs will live in webapp/docs. Lets install the required software to generate the htmls from this asciidocs
+
+```
+apt-get install ruby openjdk-8-jre
+gem install asciidoctor asciidoctor-diagram
+npm install shx --save-dev
+```
+After installing these tools we can generate the documentation. Note that we have added a new line in package.json in order to be able to run:
+```
+npm run docs
+```
+The documentation will be generated under the `build` directory. When we use docker, we are going to configure it so it is generated inside de container and deployed with the webapp.
+
 ### Testing the webapp
 
 #### Unit tests
@@ -34,6 +48,9 @@ To run the image:
 sudo docker run -p 127.0.0.1:8080:8080  webapp
 ```
 Note than http-server runs by default in port 8080 so we have to bind this port with the port in our local computer.
+You can then access the website in [localhost:8080](localhost:8080) and the docs in [localhost:8080/docs](localhost:8080/docs).
+
+Important: As you can see, this docker image takes a long time to build. The problem is installing all the software for building the doc inside the docker image. This obviously is not a good solution as this should be a production image. I leave for future work changing this for avoiding generating the doc inside the production docker image.
 
 ## The rest api
 The objective for this part is to make a rest API using Express, Node.js and MongoDB as the database (Mongose for accesing it). We will implement only two functions, one push petition, for registering a new user and a get petition, to list all the users in the system. The WS will be deployed using docker and docker-compose (to launch mongo+the ws).
@@ -81,7 +98,7 @@ Note the network="host" option which means that this container will be able to a
 ## Launching everything at the same time (docker-compose)
 All the containers will be launched in order using docker compose. Check the file [docker-compose.yaml](docker-compose.yaml) to see the definition of the containers and their lauch process. Here are the commands to launch the system and to turn it down:
 ```
-sudo docker-compose up```
+sudo docker-compose up
 ```
 ```
 sudo docker-compose down

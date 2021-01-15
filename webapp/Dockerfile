@@ -1,7 +1,17 @@
 FROM node:12.14.1
 COPY . /app
 WORKDIR /app
+#Install the webserver, we could choose other more advanced
 RUN npm install http-server -g
-RUN npm install
+#Install the dependencies
+RUN npm install --production
+#Create an optimized version of the webapp
 RUN npm run build
+#Install software neccesary for generating the doc
+RUN apt-get update && apt-get -y install ruby openjdk-8-jre
+RUN gem install asciidoctor asciidoctor-diagram
+RUN npm install shx
+#Generate the doc
+RUN npm run docs
+#Start the server
 CMD http-server build
