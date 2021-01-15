@@ -47,10 +47,10 @@ sudo docker build --tag webapp .
 ```
 To run the image:
 ```
-sudo docker run -p 127.0.0.1:8080:8080  webapp
+sudo docker run -p 127.0.0.1:3000:3000  webapp
 ```
 Note than http-server runs by default in port 8080 so we have to bind this port with the port in our local computer.
-You can then access the website in [localhost:8080](localhost:8080) and the docs in [localhost:8080/docs](localhost:8080/docs).
+You can then access the website in [localhost:8080](localhost:3000) and the docs in [localhost:3000/docs](localhost:8080/docs).
 
 Important: As you can see, this docker image takes a long time to build. The problem is installing all the software for building the doc inside the docker image. This obviously is not a good solution as this should be a production image. I leave for future work changing this for avoiding generating the doc inside the production docker image.
 

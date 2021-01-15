@@ -13,5 +13,7 @@ RUN gem install asciidoctor asciidoctor-diagram
 RUN npm install shx
 #Generate the doc
 RUN npm run docs
+#Check if the port is defined as an enviroment variable (we are in heroku), if not use 3000 as port
+ARG SERVER_PORT=${PORT:-3000}
 #Start the server
-CMD http-server build
+CMD http-server -p $SERVER_PORT build
