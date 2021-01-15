@@ -1,7 +1,7 @@
 ![CI for radarin](https://github.com/pglez82/radarin_0/workflows/CI%20for%20radarin/badge.svg)
 [![codecov](https://codecov.io/gh/pglez82/radarin_0/branch/master/graph/badge.svg?token=MSC5JW0F0K)](https://codecov.io/gh/pglez82/radarin_0)
 # Radarin project structure
-
+Link to the deployed sample application: [radarin0](https://radarin0webapp.herokuapp.com/).
 ## The webapp
 In this case we are using react for the webapp. Lets create the app in the directory webapp with the following command (make sure you have npm installed in your system):
 ```
@@ -114,3 +114,4 @@ The workflow for this is in [radarin.yml](.github/workflow/radarin.yml). In this
 So, the first to jobs in this file build the webapp and the restapi (in pararell). If everything goes well, it start deployment. For that we are going to use [Heroku](heroku.com). Heroku allows as to deploy docker containers. For the database we are going to use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) which will provide a free mongodb database in the cloud that will be enough for our application.
 One important thing here is that we need to change the connection string to the database depending if we are running our application (locally, launching it with npm start or with docker-compose, it doesn't matter). For that we are going to use one enviroment variable in Heroku. In our code (check server.js), if we find this variable we will connect to MongoDB Atlas, if not, we are connecting to our local MongoDB.
 In Heroku we need to create to apps, one for the restapi the other for the webapp. Each job is deploying one part of our project. 
+Also it is important to know that Heroku doesn't allow us to chose the port of our application. For that we have to use the enviroment variable `PORT` in both the webapp and the restapi.
