@@ -6,7 +6,7 @@ webapp/node_modules
 .pnp.js
 
 # testing
-/coverage
+/webapp/coverage
 
 # production
 webapp/build
