@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/pglez82/radarin_0.svg?branch=master)](https://travis-ci.com/pglez82/radarin_0)
+[![codecov](https://codecov.io/gh/pglez82/radarin_0/branch/master/graph/badge.svg?token=MSC5JW0F0K)](https://codecov.io/gh/pglez82/radarin_0)
 # Radarin project structure
 
 ## The webapp
