@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - 12.14.1
+cache:
+  directories:
+  - node_modules
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install ruby openjdk-8-jre
+  - sudo gem install asciidoctor asciidoctor-diagram
+script:
+  - npm install -g codecov
+  - npm test && codecov
+  #- npm run test:e2e
+  - npm run build
+  - npm run docs
