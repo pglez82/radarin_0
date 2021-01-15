@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/pglez82/radarin_0.svg?branch=master)](https://travis-ci.com/pglez82/radarin_0)
+![CI for radarin](https://github.com/pglez82/radarin_0/workflows/CI%20for%20radarin/badge.svg)
 [![codecov](https://codecov.io/gh/pglez82/radarin_0/branch/master/graph/badge.svg?token=MSC5JW0F0K)](https://codecov.io/gh/pglez82/radarin_0)
 # Radarin project structure
 
@@ -105,3 +105,8 @@ sudo docker-compose up
 ```
 sudo docker-compose down
 ```
+
+## Continous integration
+In this step we are going to setup GitHub Actions in order to have CI in our system. The idea is that, everytime we make a push to master, build the system (restapi and webapp), run the tests, and if everything is ok, build the docker images and upload them to Heroku to have our application deployed.
+
+The workflow for this is in [radarin.yml](.github/workflow/radarin.yml). In this file you can see that there are two jobs, one for the restapi, one for the webapp. Jobs are executed in pararell so this will speed up our build.
