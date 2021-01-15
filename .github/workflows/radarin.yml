@@ -20,3 +20,15 @@ jobs:
     - run: npm ci
     - run: npm run build
     - run: npm test
+  build-test-restapi:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: restapi
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.14.1
+    - run: npm ci
+    - run: npm test
