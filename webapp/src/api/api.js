@@ -1,10 +1,11 @@
-//RESTAPI_URI is an enviroment variable defined in HEROKU. If it exists we know
-//we are in production. If not we are executing locally
-const apiEndPoint=process.env.REACT_APP_API_URL || 'http://localhost:5000/api'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 
+const env = runtimeEnv()
+
+const apiEndPoint= env.REACT_APP_API_URI || 'http://localhost:5000/api'
+
+//REACT_APP_API_URI is an enviroment variable defined in the file .env.development or .env.production
 export async function addUser(username,email){
-    const apiEndPoint=process.env.REACT_APP_API_URL || 'http://localhost:5000/api'
-    console.log("adding a user "+username)
     let response = await fetch(apiEndPoint+'/users/add', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
@@ -14,8 +15,7 @@ export async function addUser(username,email){
 }
 
 export async function getUsers(){
-    const apiEndPoint=process.env.REACT_APP_API_URL || 'http://localhost:5000/api'
-    console.log(process.env.REACT_APP_API_URL)
+    console.log(apiEndPoint)
     let response = await fetch(apiEndPoint+'/users/list')
     return await response.json()
 }
