@@ -32,3 +32,18 @@ jobs:
         node-version: 12.14.1
     - run: npm ci
     - run: npm test
+  deploy-webapp:
+    needs: [build-test-webapp, build-test-restapi]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webapp
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.8.9 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "radarin0webapp" #Must be unique in Heroku
+          heroku_email: "pglez82@gmail.com"
+          usedocker: true
+
