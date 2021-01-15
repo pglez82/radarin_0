@@ -1,4 +1,4 @@
-name: Node.js CI
+name: CI for radarin
 
 on:
   push:
@@ -7,20 +7,17 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  build-test-webapp:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.14.1]
-
+    defaults:
+      run:
+        working-directory: webapp
     steps:
+    - name: Install the dependencies
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 12.14.1
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm run build
     - run: npm test
