@@ -44,8 +44,10 @@ jobs:
           heroku_email: "pglez82@gmail.com"
           usedocker: true
           appdir: "webapp"
+          docker_build_args: |
+            API_URI
         env:
-          REACT_APP_API_URI: "https://radarin0restapi.herokuapp.com/api"
+          API_URI: "https://radarin0restapi.herokuapp.com/api"
   deploy-restapi:
     needs: [build-test-webapp, build-test-restapi]
     runs-on: ubuntu-latest
