@@ -45,7 +45,7 @@ jobs:
           usedocker: true
           appdir: "webapp"
         env:
-          HD_REACT_APP_API_URI: "https://radarin0restapi.herokuapp.com/api"
+          REACT_APP_API_URI: "https://radarin0restapi.herokuapp.com/api"
   deploy-restapi:
     needs: [build-test-webapp, build-test-restapi]
     runs-on: ubuntu-latest
