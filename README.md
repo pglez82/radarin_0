@@ -79,7 +79,7 @@ sudo docker run -p 127.0.0.1:3000:3000  webapp
 ```
 In order to run the app, we need a server. npm start is not good for production so we are going to use express. Check the server.js in the webapp to understand the configuration. As we will run it in port 3000 (in localhost), we have to bind this port with the port in our local machine.
 
-You can then access the website in [localhost:8080](localhost:3000) and the docs in [localhost:3000/docs](localhost:8080/docs).
+You can then access the website in [http://localhost:3000](http://localhost:3000) and the docs in [http://localhost:3000/docs](http://localhost:8080/docs).
 
 Important: As you can see, this docker image takes a long time to build. The problem is installing all the software for building the doc inside the docker image. This obviously is not a good solution as this should be a production image. I leave for future work changing this for avoiding generating the doc inside the production docker image.
 
