@@ -4,7 +4,6 @@ const router = express.Router()
 
 // Get all users
 router.get("/users/list", async (req, res) => {
-    console.log("users lists")
 	const users = await User.find({})
 	res.send(users)
 })

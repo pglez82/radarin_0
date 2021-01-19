@@ -1,4 +1,7 @@
 version: '3'
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
 services:
   mongoserver:
     image: mongo
@@ -12,6 +15,28 @@ services:
       - mongoserver
   webapp:
     build: ./webapp
+    network_mode: "host"
+    depends_on: 
+      - restapi
+  
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./restapi/monitoring/prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    network_mode: "host"
+    depends_on: 
+      - restapi
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./restapi/monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SERVER_HTTP_PORT=9091
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     network_mode: "host"
     depends_on: 
       - restapi

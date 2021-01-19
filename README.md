@@ -9,7 +9,14 @@ If you want to execute the project you will need `git`, `npm` and `docker`. Make
 mkdir restapi/data
 docker-compose up --build
 ```
-This will create two docker images as they don't exist in your system (the webapp and the restapi) and launch a mongo container database (which will use the restapi/data directory to store the database).
+This will create two docker images as they don't exist in your system (the webapp and the restapi) and launch a mongo container database (which will use the restapi/data directory to store the database). It will also launch Prometheus and Grafana containers to monitor the webservice. You can access everything from here:
+ - [Webapp - http://localhost:3000](http://localhost:3000)
+ - [Docs - http://localhost:3000/docs](http://localhost:3000/docs)
+ - [RestApi example call - http://localhost:5000/api/users/list](http://localhost:5000/api/users/list)
+ - [RestApi raw metrics - http://localhost:5000/metrics](http://localhost:5000/metrics)
+ - [Prometheus server - http://localhost:9090](http://localhost:9090)
+ - [Grafana server http://localhost:9091](http://localhost:9091)
+ 
 If you want to run it without docker (even though you still need docker to run the mongo db database):
 ```
 cd restapi
@@ -71,11 +78,11 @@ Basically this tests make sure that each component work isolated. It is importan
 ### Docker image for the web app
 The `Dockerfile` for the webapp is pretty simple. Just copy the app, install the dependencies, build the production version an then run a basic webserver to launch it. To create the webapp docker image just run:
 ```
-sudo docker build --tag webapp .
+docker build --tag webapp .
 ```
 To run the image:
 ```
-sudo docker run -p 127.0.0.1:3000:3000  webapp
+docker run -p 127.0.0.1:3000:3000  webapp
 ```
 In order to run the app, we need a server. npm start is not good for production so we are going to use express. Check the server.js in the webapp to understand the configuration. As we will run it in port 3000 (in localhost), we have to bind this port with the port in our local machine.
 
@@ -96,7 +103,7 @@ npm install express mongoose
 Now lets run the database. Note that for the volume, docker only accepts absolute paths.
 ```
 mkdir data
-sudo docker run -d -p 27017:27017 -v `pwd`/data:/data/db mongo
+docker run -d -p 27017:27017 -v `pwd`/data:/data/db mongo
 ```
 The code is quite straight forward, the `server.js` launchs the api and connects to the mongo database using mongoose. The `app.js` is actually the api, you will see there two api entry points, one post for creating a new user, and one get to list all the users. The `models/users.js` defines the schema of our mongo database.
 
@@ -114,25 +121,25 @@ In this case the web service depends on the mongo database. What we are going to
 
 For launching manually the database and the restapi, first we build the restapi container:
 ```
-sudo docker build --tag restapi .
+docker build --tag restapi .
 ```
 Then we launch the database container:
 ```
-sudo docker run -d -p 27017:27017 -v `pwd`/data:/data/db mongo
+docker run -d -p 27017:27017 -v `pwd`/data:/data/db mongo
 ```
 as we did before. Then launch the restapi container:
 ```
-sudo docker run --network="host" restapi
+docker run --network="host" restapi
 ```
 Note the network="host" option which means that this container will be able to access the host network. This is important so the restapi can access the database.
 
 ## Launching everything at the same time (docker-compose)
 All the containers will be launched in order using docker compose. Check the file [docker-compose.yaml](docker-compose.yaml) to see the definition of the containers and their lauch process. Here are the commands to launch the system and to turn it down:
 ```
-sudo docker-compose up
+docker-compose up
 ```
 ```
-sudo docker-compose down
+docker-compose down
 ```
 
 ## Continous integration
@@ -145,3 +152,37 @@ One important thing here is that we need to change the connection string to the 
 In Heroku we need to create two apps, one for the restapi the other for the webapp. Each job is deploying one part of our project. 
 Also it is important to know that Heroku doesn't allow us to chose the port of our application. For that we have to use the enviroment variable `PORT` in both the webapp and the restapi.
 Another important point is the api end point. In react it will be hardcoded compiled in the application, so we need to configure this in the Dockerfile, prior to building the app. Using arguments we can differenciate when we are deploying locally with docker-compose or when we are doing it with github actions, so we can use the local restapi or the one deployed in Heroku.
+
+## Monitoring
+In this step we are going use Prometheus and Grafana to monitor the restapi. First step is modifying the restapi launch to capture profiling data. In nodejs this is very easy. First install the required packages:
+
+```
+npm install prom-client express-prom-bundle
+```
+
+Then, modify the `restapi/server.js` in order to capture the profiling data adding:
+```
+const metricsMiddleware = promBundle({includeMethod: true});
+app.use(metricsMiddleware);
+```
+Now when we launch the api, in [http://localhost:5000/metrics](http://localhost:5000/metrics) we have a metrics endpoint from which get the profiling data. The idea here is to have another piece of software running (called [Prometheus](https://prometheus.io/)) that will get this data, let say, every five seconds. Then, another software called [Grafana](https://grafana.com/) will display this using beautiful charts.
+
+For running Prometheus and Grafana we can use serveral docker images:
+```
+cd restapi
+docker run --rm --net=host -p 9090:9090 -v `pwd`/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
+```
+docker run --rm -p 9091 --net=host -e GF_AUTH_DISABLE_LOGIN_FORM=true -e GF_AUTH_ANONYMOUS_ENABLED=true -e GF_AUTH_ANONYMOUS_ORG_ROLE=Admin -e GF_SERVER_HTTP_PORT=9091 -v `pwd`/monitoring/grafana/datasources/datasource.yml:/etc/grafana/provisioning/datasources/datasources.yml grafana/grafana
+```
+Note that in the prometheus.yml we are telling prometheus where is our restapi metrics end point. In grafana docker image we are telling where to find prometheus data.
+
+Obviously this can be easyly integrated with docker-compose so when the restapi, the database and the webapp are launched, also the monitoring services are launched together (check docker-compose.yaml). Once launched (see the Quick Start Guide), we can simulate a few petitions to our webservice:
+
+```
+sudo apt-get install apache2-utils
+ab -m GET -n 10000 -c 100 http://localhost:5000/api/users/list
+```
+In the grafana dashboard we can see how the number of petitions increases dramatically after the call.
+
+A good reference with good explanations about monitoring in nodejs can be found [here](https://github.com/coder-society/nodejs-application-monitoring-with-prometheus-and-grafana).
