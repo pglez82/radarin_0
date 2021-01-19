@@ -153,7 +153,7 @@ In Heroku we need to create two apps, one for the restapi the other for the weba
 Also it is important to know that Heroku doesn't allow us to chose the port of our application. For that we have to use the enviroment variable `PORT` in both the webapp and the restapi.
 Another important point is the api end point. In react it will be hardcoded compiled in the application, so we need to configure this in the Dockerfile, prior to building the app. Using arguments we can differenciate when we are deploying locally with docker-compose or when we are doing it with github actions, so we can use the local restapi or the one deployed in Heroku.
 
-## Monitoring
+## Monitoring (Prometheus and Grafana)
 In this step we are going use Prometheus and Grafana to monitor the restapi. First step is modifying the restapi launch to capture profiling data. In nodejs this is very easy. First install the required packages:
 
 ```
@@ -186,3 +186,34 @@ ab -m GET -n 10000 -c 100 http://localhost:5000/api/users/list
 In the grafana dashboard we can see how the number of petitions increases dramatically after the call.
 
 A good reference with good explanations about monitoring in nodejs can be found [here](https://github.com/coder-society/nodejs-application-monitoring-with-prometheus-and-grafana).
+
+## Load testing (Gatling)
+This part will be carried out using [Gatling](https://gatling.io/). Gatling will simulate load in our system making petitions to the webapp.
+
+In order to use Gatling for doing the load tests in our application we need to [download](https://gatling.io/open-source/start-testing/) it. Basically, the program has two parts, a [recorder](https://gatling.io/docs/current/http/recorder) to capture the actions that we want to test and a program to run this actions and get the results. Gatling will take care of capture all the response times in our requests and presenting them in quite useful graphics for its posterior analysis.
+
+Once we have downloaded Gatling we need to start the [recorder](https://gatling.io/docs/current/http/recorder). This works as a proxy that intercepts all the actions that we make in our browser. That means that we have to configure our browser to use a proxy. We have to follow this steps:
+
+1. Configure the recorder in **HTTP proxy mode**.
+2. Configure the **HTTPs mode** to Certificate Authority.
+3. Generate a **CA certificate** and key. For this, press the Generate CA button. You will have to choose a folder to generate the certificates. Two pem files will be generated.
+4. Configure Firefox to use this **CA certificate** (Preferences>Certificates, import the generated certificate).
+5. Configure Firefox to use a **proxy** (Preferences>Network configuration). The proxy will be localhost:8000.
+6. Configure Firefox so it uses this proxy even if the call is to a local address. In order to do this, we need to set the property `network.proxy.allow_hijacking_localhost` to `true` in `about:config`. 
+
+Once we have the recorder configured, and the application running (in Heroku for instance), we can start recording our first test. We must specify a package and class name. This is just for test organization. Package will be a folder and Class name the name of the test. In my case I have used `GetUsersList` without package name. After pressing start the recorder will start capturing our actions in the browser. So here you should perform all the the actions that you want to record. In my case I just browsed to the Heroku deployed webapp. Once we stop recording the simulation will be stored under the `user-files/simulations` directory, written in [Scala](https://www.scala-lang.org/) language. I have copied the generated file under `webapp/loadtestexample` just in case you want to see how a test file in gatling looks like.
+
+We can modify our load test for instance to inject 20 users at the same time:
+```
+setUp(scn.inject(atOnceUsers(20))).protocols(httpProtocol)
+```
+changing it in the scala file.
+In order to execute the test we have to execute:
+```
+gatling.sh -s GetUsersExample
+```
+
+In the console, we will get an overview of the results and in the results directory we will have the full report in web format.
+
+It is important to note that we could also dockerize this load tests using this [image](https://hub.docker.com/r/denvazh/gatling). It is just a matter of telling the docker file where your gatling configuration and scala files are and the image will do the rest.
+
