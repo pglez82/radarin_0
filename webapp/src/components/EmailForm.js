@@ -6,7 +6,7 @@ import {addUser,getUsers} from '../api/api'
 class EmailForm extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {email: '', remail: '', enabled: false, welcomeMsg: ''}
+    this.state = {email: '', enabled: false, welcomeMsg: ''}
   }
 
   componentDidMount(){
@@ -26,15 +26,25 @@ class EmailForm extends React.Component{
   async registerUser(){
       let response = await addUser(this.state.username,this.state.email)
       console.log(response)
-      if (response.name !== this.state.username)
-        this.setState({welcomeMsg:'ERROR: Something is wrong with the api!'})
+      if (response.error)
+        this.setState({welcomeMsg:response.error})
+      else if (response.name===this.state.username)
+        this.setState({welcomeMsg:"Welcome to ASW"})
+      else
+        this.setState({welcomeMsg:"Unexpected error, maybe the restapi is still sleeping..."})
       //Refresh the users
       this.fetchUsers()
   }
 
   async fetchUsers(){
-    let users = await getUsers()
-    this.props.refreshUsers(users)
+    try{
+      let users = await getUsers()
+      this.props.refreshUsers(users)
+    }
+    catch(error)
+    {
+      console.log("Error fetching user list from restapi. Is it on?")
+    }
   }
 
   async handleSubmit(e) {
@@ -49,18 +59,18 @@ class EmailForm extends React.Component{
 
   render(){
     return(
-          <Form  onSubmit={this.handleSubmit.bind(this)}>
-            <Form.Group controlId="formBasicEmail">
+          <Form name="register" onSubmit={this.handleSubmit.bind(this)}>
+            <Form.Group>
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" onChange={this.changeEmail.bind(this)} value={this.state.email}/>
+              <Form.Control name="email" type="email" placeholder="Enter email" onChange={this.changeEmail.bind(this)} value={this.state.email}/>
               <Form.Text className="text-muted">
                 Careful! Your email will be public!
               </Form.Text>
             </Form.Group>
         
-            <Form.Group controlId="formBasicName">
+            <Form.Group>
               <Form.Label>Name</Form.Label>
-              <Form.Control type="string" placeholder="Name" onChange={this.changeUserName.bind(this)} value={this.state.username} />
+              <Form.Control name="username" type="string" placeholder="Name" onChange={this.changeUserName.bind(this)} value={this.state.username} />
             </Form.Group>
             <Button variant="primary" type="submit">
               Submit
