@@ -3,9 +3,8 @@ This server file allow to start the restapi using an in-memory database
 This will be handy for testing
 */
 
-
-const express = require("express")
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const express = require("express")
 const cors = require('cors');
 const mongoose = require("mongoose")
 const api = require("../api") 
