@@ -19,7 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --coverage",
-    "test:e2e": "cd e2e && jest --forceExit",
+    "test:e2e": "cd e2e && jest",
     "docs": "shx rm -rf build/docs && asciidoctor -D build/docs -a imagesdir=./images -r asciidoctor-diagram docs/index.adoc && shx cp -R docs/images build/docs",
     "eject": "react-scripts eject"
   },

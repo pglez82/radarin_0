@@ -5,6 +5,7 @@ const server = require('./server-for-tests')
  * Connect to a new in-memory database before running any tests.
  */
 beforeAll(async () => {
+    await server.startdb()
     app = await server.startserver()
 });
 
@@ -18,6 +19,7 @@ afterEach(async () => await server.clearDatabase());
  */
 afterAll(async () => {
     await server.closeServer() //finish the server
+    await server.closeDB()
 })
 
 /**

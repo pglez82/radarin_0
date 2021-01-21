@@ -10,12 +10,16 @@ const cors = require('cors');
 const mongoose = require("mongoose")
 const api = require("../api") 
 
-const mongod = new MongoMemoryServer();
 
-module.exports.startserver = async () => {
+
+module.exports.startdb = async () => {
+    mongod = new MongoMemoryServer({ instance: { port: 27017}})
     const mongo_uri =await mongod.getUri();
     console.log(mongo_uri)
     await mongoose.connect(mongo_uri, { useNewUrlParser: true,useUnifiedTopology: true })
+}
+
+module.exports.startserver = async () => {
     app = express()
 
     app.use(cors());
@@ -30,6 +34,9 @@ module.exports.startserver = async () => {
 
 module.exports.closeServer = async () => {
     await server.close()
+}
+
+module.exports.closeDB = async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
     await mongod.stop();
