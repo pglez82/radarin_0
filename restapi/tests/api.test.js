@@ -1,33 +1,23 @@
-const express = require("express")
-const dbHandler = require('./db-handler');
-const api = require('../api');
 const request = require('supertest');
-
-
-let app //api end point
-let server //server, we need this to finish it after the tests
+const server = require('./server-for-tests')
 
 /**
  * Connect to a new in-memory database before running any tests.
  */
-beforeAll(async () => await dbHandler.connect().then(() => {
-    app = express()
-    app.use(express.json())
-    app.use("/api", api)
-    server = app.listen(5000)
-}));
+beforeAll(async () => {
+    app = await server.startserver()
+});
 
 /**
  * Clear all test data after every test.
  */
-afterEach(async () => await dbHandler.clearDatabase());
+afterEach(async () => await server.clearDatabase());
 
 /**
  * Remove and close the db and server.
  */
 afterAll(async () => {
-    await server.close() //finish the server
-    await dbHandler.closeDatabase(); //close database
+    await server.closeServer() //finish the server
 })
 
 /**

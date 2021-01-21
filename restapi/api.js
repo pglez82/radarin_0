@@ -4,7 +4,7 @@ const router = express.Router()
 
 // Get all users
 router.get("/users/list", async (req, res) => {
-	const users = await User.find({})
+    const users = await User.find({}).sort('-_id') //Inverse order
 	res.send(users)
 })
 
@@ -15,15 +15,15 @@ router.post("/users/add", async (req, res) => {
     //Check if the device is already in the db
     let user = await User.findOne({ email: email })
     if (user)
-        console.log("This user is repeated")
+        res.send({error:"Error: This user is already registered"})
     else{
         user = new User({
             name: name,
             email: email,
         })
+        await user.save()
+        res.send(user)
     }
-	await user.save()
-	res.send(user)
 })
 
 module.exports = router

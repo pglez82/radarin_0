@@ -1,12 +1,13 @@
 version: '3'
 volumes:
+    mongo_data: {}
     prometheus_data: {}
     grafana_data: {}
 services:
   mongoserver:
     image: mongo
     volumes:
-      - ./restapi/data:/data/db
+      - mongo_data:/data/db
     network_mode: "host"
   restapi:
     build: ./restapi
