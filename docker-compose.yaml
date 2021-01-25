@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 volumes:
     mongo_data: {}
     prometheus_data: {}
@@ -8,15 +8,18 @@ services:
     image: mongo
     volumes:
       - mongo_data:/data/db
-    network_mode: "host"
+    ports:
+      - "27017:27017"
   restapi:
     build: ./restapi
-    network_mode: "host"
+    ports:
+      - "5000:5000"
     depends_on:
       - mongoserver
   webapp:
     build: ./webapp
-    network_mode: "host"
+    ports:
+      - "3000:3000"
     depends_on: 
       - restapi
   
@@ -25,7 +28,8 @@ services:
     volumes:
       - ./restapi/monitoring/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
-    network_mode: "host"
+    ports:
+      - "9090:9090"
     depends_on: 
       - restapi
   grafana:
@@ -38,6 +42,7 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-    network_mode: "host"
+    ports:
+      - "9091:9091"
     depends_on: 
       - restapi

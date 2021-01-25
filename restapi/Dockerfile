@@ -10,9 +10,11 @@ COPY package*.json ./
 #In this case, the mongodb in memory dependency is quite heavy so we avoid it for the docker image
 RUN npm install --production
 
+ARG MONGO_URI="mongodb://mongoserver:27017/api"
+ENV MONGO_URI=$MONGO_URI
+
 # Bundle app source
 COPY server.js api.js ./
 ADD models ./models
 
-EXPOSE 5000
 CMD [ "node", "server.js" ]
