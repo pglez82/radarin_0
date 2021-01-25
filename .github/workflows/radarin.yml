@@ -74,5 +74,5 @@ jobs:
           docker_build_args: |
             MONGO_URI
         env:
-          MONGO_URI: "mongodb+srv://mongouser:GxZTvEePTxvRWJB3@radarin0.ersqw.mongodb.net"
+          MONGO_URI: ${{secrets.MONGO_URI}}
 
