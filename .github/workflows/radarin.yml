@@ -71,4 +71,8 @@ jobs:
           heroku_email: "pglez82@gmail.com"
           usedocker: true
           appdir: "restapi"
+          docker_build_args: |
+            MONGO_URI
+        env:
+          MONGO_URI: ${{secrets.MONGO_URI}}
 
