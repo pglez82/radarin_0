@@ -24,7 +24,7 @@ The idea here is to have the documentation along with the webapp in /docs. We ar
 ```
 apt-get install ruby openjdk-8-jre
 gem install asciidoctor asciidoctor-diagram
-npm install shx --save-dev
+npm install shx
 ```
 After installing these tools we can generate the documentation. Note that we have added a new line in package.json in order to be able to run:
 ```
