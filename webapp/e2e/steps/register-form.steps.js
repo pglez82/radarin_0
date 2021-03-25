@@ -24,10 +24,10 @@ defineFeature(feature, test => {
         email: email,
       })
       await expect(page).toClick('button', { text: 'Submit' })
-      await expect(page).toMatch('Welcome to ASW')
     });
 
     then('A welcome message should be shown in the screen', async () => {
+      await expect(page).toMatch('Welcome to ASW')
     });
   });
 
