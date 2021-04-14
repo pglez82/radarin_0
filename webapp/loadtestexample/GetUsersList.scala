@@ -37,4 +37,4 @@ class GetUsersList extends Simulation {
 			.get(uri2)
 			.headers(headers_2)))
 
-	setUp(scn.inject(atOnceUsers(1))).protocols(httpProtocol)
+	setUp(scn.inject(atOnceUsers(20))).protocols(httpProtocol)
